@@ -233,7 +233,7 @@ if [ "$1" == "install" ]; then
 
     rm -rf ./.git
 
-    if [! command -v git &>/dev/null]; then
+    if [ ! command -v git &>/dev/null ]; then
         echo "Não foi possível encontra o Git instalado neste computador."
         exit 1
     fi
@@ -248,6 +248,11 @@ if [ "$1" == "install" ]; then
     if [ -z "$3" ]; then
         exit 0
     fi
+
+# para posteriormente:
+# regex para o ssh do github
+# ^git@github\.com:[\w-]+\/[\w-]+\.git$
+
 
     git remote add origin "$3"
     git push -u origin main
