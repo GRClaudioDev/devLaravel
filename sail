@@ -131,9 +131,13 @@ fi
 # Source the ".env" file so Laravel's environment variables are available...
 # shellcheck source=/dev/null
 if [ -n "$APP_ENV" ] && [ -f ./.env."$APP_ENV" ]; then
-  source ./.env."$APP_ENV";
+    source ./.env."$APP_ENV";
 elif [ -f ./.env ]; then
-  source ./.env;
+    source ./.env;
+elif [ -f ./.env.example ] && [ "$1" == "install" ]
+    cp ./.env.example ./.env
+    source ./.env
+    CREATE_KEY=true
 fi
 
 # Define environment variables...
@@ -206,8 +210,55 @@ fi
 
 ARGS=()
 
+# Custon files
+if [ "$1" == "install" ]; then
+    
+    if [ "$EXEC" == "no" ]; then
+        "${DOCKER_COMPOSE[@]}" up -d
+    fi
+
+    "${DOCKER_COMPOSE[@]}" exec -u sail "$APP_SERVICE" composer install && npm install && npm run build
+
+    if [ -n "$CREATE_KEY" ]; then
+        "${DOCKER_COMPOSE[@]}" exec -u sail "$APP_SERVICE" php ./artisan key:generate
+    fi
+
+    clear
+    echo "As dependências para desenvolvimento já foram instaladas e os containers já estão rodando."
+
+    if 
+    
+    if [ "$2" != "--git" ] && [ "$2" != "-git" ] && [ "$2" != "git" ]; then
+        exit 0
+    fi
+
+    rm -rf ./.git
+
+    if [! command -v git &>/dev/null]; then
+        echo "Não foi possível encontra o Git instalado neste computador."
+        exit 1
+    fi
+    
+    git init
+    git add .
+    git commit -m "first commit: starting project with devLaravel"
+    git branch -M main
+
+    echo "Um novo repositório Git foi criado."
+
+    if [ -z "$3" ]; then
+        exit 0
+    fi
+
+    git remote add origin "$3"
+    git push -u origin main
+
+    echo "Seu repositório remoto já está sincronizado com o local."    
+    
+    exit 0
+
 # Proxy PHP commands to the "php" binary on the application container...
-if [ "$1" == "php" ]; then
+elif [ "$1" == "php" ]; then
     shift 1
 
     if [ "$EXEC" == "yes" ]; then
