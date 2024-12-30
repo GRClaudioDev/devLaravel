@@ -15,6 +15,7 @@
         "league/flysystem-aws-s3-v3": "^3.29"
     },
     "require-dev": {
+        "barryvdh/laravel-debugbar": "^3.14",
         "fakerphp/faker": "^1.23",
         "larastan/larastan": "^3.0",
         "laravel/pail": "^1.1",
