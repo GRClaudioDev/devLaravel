@@ -26,6 +26,20 @@ services:
             - minio
             - redis
             - mailpit
+    phpmyadmin:
+        image: phpmyadmin:latest
+        ports:
+        - 8080:80
+        environment:
+            PMA_ARBITRARY: 1
+            PMA_HOST: mysql
+            PMA_PORT: '${FORWARD_DB_PORT:-3306}:3306'
+            PMA_USER: '${DB_USERNAME}'
+            PMA_PASSWORD: '${DB_PASSWORD}'
+        networks:
+            - sail
+        depends_on:
+            - mysql
     mysql:
         image: 'mysql/mysql-server:8.0'
         ports:
@@ -82,7 +96,7 @@ services:
             AWS_BUCKET: ${AWS_BUCKET:-mybucket}
         volumes:
             - './docker/minio/create-bucket.sh:/etc/minio/create-bucket.sh'
-        entrypoint: /etc/miniocreate-bucket.sh
+        entrypoint: /etc/minio/create-bucket.sh
         networks:
             - sail
 
