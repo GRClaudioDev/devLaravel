@@ -134,7 +134,7 @@ if [ -n "$APP_ENV" ] && [ -f ./.env."$APP_ENV" ]; then
     source ./.env."$APP_ENV";
 elif [ -f ./.env ]; then
     source ./.env;
-elif [ -f ./.env.example ] && [ "$1" == "install" ]
+elif [ -f ./.env.example ] && [ "$1" == "install" ]; then
     cp ./.env.example ./.env
     source ./.env
     CREATE_KEY=true
@@ -214,19 +214,18 @@ ARGS=()
 if [ "$1" == "install" ]; then
     
     if [ "$EXEC" == "no" ]; then
-        "${DOCKER_COMPOSE[@]}" up -d
+        "${DOCKER_COMPOSE[@]}" up -d;
     fi
 
-    "${DOCKER_COMPOSE[@]}" exec -u sail "$APP_SERVICE" composer install && npm install && npm run build
+    "${DOCKER_COMPOSE[@]}" exec -u sail "$APP_SERVICE" composer install && npm install && npm run build;
 
     if [ -n "$CREATE_KEY" ]; then
-        "${DOCKER_COMPOSE[@]}" exec -u sail "$APP_SERVICE" php ./artisan key:generate
+        "${DOCKER_COMPOSE[@]}" exec -u sail "$APP_SERVICE" php ./artisan key:generate;
     fi
 
-    clear
-    echo "As dependências para desenvolvimento já foram instaladas e os containers já estão rodando."
-
-    if 
+    clear;
+    echo "As dependências para desenvolvimento já foram instaladas e os containers já estão rodando.";
+ 
     
     if [ "$2" != "--git" ] && [ "$2" != "-git" ] && [ "$2" != "git" ]; then
         exit 0
